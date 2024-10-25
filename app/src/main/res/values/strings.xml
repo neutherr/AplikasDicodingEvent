@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Aplikasi Dicoding Event</string>
+    <string name="title">Judul</string>
+    <string name="title_home">Home</string>
+    <string name="title_upcoming">Upcoming</string>
+    <string name="title_finish">Finished</string>
+    <string name="owner_name">Penyelenggara: </string>
+    <string name="quota_left">Sisa Kuota: </string>
+    <string name="informasi">Informasi: </string>
+    <string name="date">Tanggal:</string>
+    <string name="register">Daftar</string>
+    <string name="detail_event">Detail Event</string>
+    <string name="search">Search</string>
+    <string name="searchbar_hint">Masukkan kata</string>
+    <string name="favorite">Favorite</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="finished">Finished</string>
+    <string name="label_time">Waktu:</string>
+    <string name="btn_open_link">Buka Link Event</string>
+    <string name="remaining_quota">%d</string>
+    <string name="label_organizer">Penyelenggara:</string>
+    <string name="label_date">Tanggal:</string>
+    <string name="label_quota">Sisa Kuota:</string>
+    <string name="label_description">Deskripsi:</string>
+    <string name="btn_register">Daftar Event</string>
+</resources>

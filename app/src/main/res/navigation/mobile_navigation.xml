@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_upcoming">
+
+    <fragment
+        android:id="@+id/navigation_upcoming"
+        android:name="com.example.aplikasidicodingevent.ui.upcoming.UpcomingFragment"
+        android:label="Upcoming Events">
+        <action
+            android:id="@+id/action_upcoming_to_detail"
+            app:destination="@id/navigation_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_finished"
+        android:name="com.example.aplikasidicodingevent.ui.finished.FinishedFragment"
+        android:label="Finished Events">
+        <action
+            android:id="@+id/action_finished_to_detail"
+            app:destination="@id/navigation_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_detail"
+        android:name="com.example.aplikasidicodingevent.ui.detail.DetailFragment"
+        android:label="Event Detail">
+        <argument
+            android:name="eventId"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
+</navigation>
