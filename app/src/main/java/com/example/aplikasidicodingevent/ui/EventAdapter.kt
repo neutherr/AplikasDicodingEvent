@@ -2,9 +2,10 @@ package com.example.aplikasidicodingevent.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.NavOptions
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -46,27 +47,20 @@ class EventAdapter : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
                     .load(event.mediaCover)
                     .into(ivPicture)
 
+                // Modifikasi di sini untuk navigasi yang benar
                 root.setOnClickListener {
-                    // Tambahkan log untuk memeriksa ID
-                    val eventId = event.id
-                    Log.d("EventAdapter", "Clicked event with id: $eventId")
-
                     val bundle = Bundle().apply {
                         putInt("eventId", event.id ?: 0)
                     }
-
-                    try {
-                        itemView.findNavController().navigate(
-                            R.id.navigation_detail,
-                            bundle
+                    Navigation.findNavController(itemView)
+                        .navigate(R.id.navigation_detail, bundle,
+                            // Tambahkan ini untuk mengatur behavior navigasi
+                            NavOptions.Builder()
+                                .setPopUpTo(R.id.navigation_favorite, false)
+                                .build()
                         )
-                    } catch (e: Exception) {
-                        Log.e("EventAdapter", "Navigation failed", e)
-                    }
                 }
             }
         }
     }
 }
-
-

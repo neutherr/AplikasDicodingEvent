@@ -4,63 +4,68 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.aplikasidicodingevent.data.response.EventResponse
+import androidx.lifecycle.viewModelScope
+import com.example.aplikasidicodingevent.data.local.entity.FavoriteEvent
+import com.example.aplikasidicodingevent.data.response.DetailEventResponse
 import com.example.aplikasidicodingevent.data.response.ListEventsItem
 import com.example.aplikasidicodingevent.data.retrofit.ApiConfig
+import com.example.aplikasidicodingevent.data.local.repository.EventRepository
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DetailViewModel : ViewModel() {
-    private val _detailEvent = MutableLiveData<ListEventsItem>()
+class DetailViewModel(private val repository: EventRepository) : ViewModel() {
+    private var _detailEvent = MutableLiveData<ListEventsItem>()
     val detailEvent: LiveData<ListEventsItem> = _detailEvent
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    fun getDetailEvent(id: Int) {
-        _isLoading.value = true
-        Log.d(TAG, "Fetching detail for event ID: $id")
+    companion object {
+        private const val TAG = "DetailViewModel"
+    }
 
-        val client = ApiConfig.getApiService().getDetailEvent(id)
-        client.enqueue(object : Callback<EventResponse> {
+    fun getDetailEvent(eventId: Int) {
+        _isLoading.value = true
+        val client = ApiConfig.getApiService().getDetailEvent(eventId)
+        client.enqueue(object : Callback<DetailEventResponse> {
             override fun onResponse(
-                call: Call<EventResponse>,
-                response: Response<EventResponse>
+                call: Call<DetailEventResponse>,
+                response: Response<DetailEventResponse>
             ) {
                 _isLoading.value = false
-                Log.d(TAG, "Response received: ${response.body()}")
-
                 if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody != null && !responseBody.error!!) {
-                        try {
-                            // Ambil event dari response dan set ke LiveData
-                            responseBody.listEvents.firstOrNull()?.let { event ->
-                                _detailEvent.value = event
-                                Log.d(TAG, "Detail event set successfully: $event")
-                            } ?: run {
-                                Log.e(TAG, "Event data is null")
-                            }
-                        } catch (e: Exception) {
-                            Log.e(TAG, "Error processing event data", e)
+                    response.body()?.let { detailResponse ->
+                        if (!detailResponse.error!!) {
+                            _detailEvent.value = detailResponse.event
+                        } else {
+                            Log.e(TAG, "Error: ${detailResponse.message}")
                         }
-                    } else {
-                        Log.e(TAG, "Response error: ${responseBody?.message}")
                     }
                 } else {
-                    Log.e(TAG, "Response not successful: ${response.message()}")
+                    Log.e(TAG, "onFailure: ${response.message()}")
                 }
             }
 
-            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
+            override fun onFailure(call: Call<DetailEventResponse>, t: Throwable) {
                 _isLoading.value = false
-                Log.e(TAG, "Network error: ${t.message}")
+                Log.e(TAG, "onFailure: ${t.message.toString()}")
             }
         })
     }
 
-    companion object {
-        private const val TAG = "com.example.aplikasidicodingevent.ui.detail.DetailViewModel"
+    fun getFavoriteStatus(id: String): LiveData<FavoriteEvent?> {
+        return repository.getFavoriteEventById(id)
+    }
+
+    fun toggleFavorite(event: FavoriteEvent, isFavorite: Boolean) {
+        viewModelScope.launch {
+            if (isFavorite) {
+                repository.removeFromFavorite(event)
+            } else {
+                repository.addToFavorite(event)
+            }
+        }
     }
 }

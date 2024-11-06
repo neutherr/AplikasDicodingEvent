@@ -1,5 +1,6 @@
 package com.example.aplikasidicodingevent.data.retrofit
 
+import com.example.aplikasidicodingevent.data.response.DetailEventResponse
 import com.example.aplikasidicodingevent.data.response.EventResponse
 import retrofit2.Call
 import retrofit2.http.GET
@@ -15,5 +16,5 @@ interface ApiService {
     @GET("events/{id}")
     fun getDetailEvent(
         @Path("id") id: Int
-    ): Call<EventResponse>
+    ): Call<DetailEventResponse>  // Ubah tipe response
 }

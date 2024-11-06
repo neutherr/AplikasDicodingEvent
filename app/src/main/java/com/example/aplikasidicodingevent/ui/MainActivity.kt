@@ -2,61 +2,45 @@ package com.example.aplikasidicodingevent.ui
 
 import android.os.Bundle
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
-import com.example.aplikasidicodingevent.R
-import com.example.aplikasidicodingevent.data.response.EventResponse
-import com.example.aplikasidicodingevent.data.retrofit.ApiConfig
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.aplikasidicodingevent.databinding.ActivityMainBinding
+
 
 class MainActivity : AppCompatActivity() {
-
+    private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: EventAdapter
-    private lateinit var rvEvents: RecyclerView
-    private lateinit var progressBar: ProgressBar
+    private val viewModel: EventViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        rvEvents = findViewById(R.id.rvEvents)
-        progressBar = findViewById(R.id.progressBar)
+        setupRecyclerView()
+        setupObservers()
+        viewModel.getEvents(1)
+    }
+
+    private fun setupRecyclerView() {
         adapter = EventAdapter()
-        rvEvents.adapter = adapter
-
-        fetchEvents()
+        binding.rvEvents.adapter = adapter
     }
 
-    private fun fetchEvents() {
-        showLoading(true)
-        val client = ApiConfig.getApiService().getActiveEvents(1)
-        client.enqueue(object : Callback<EventResponse> {
-            override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
-                showLoading(false)
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody != null && !responseBody.error!!) {
-                        adapter.setEvents(responseBody.listEvents)
-                    } else {
-                        Toast.makeText(this@MainActivity, "Error: ${responseBody?.message}", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    Toast.makeText(this@MainActivity, "Error: ${response.message()}", Toast.LENGTH_SHORT).show()
-                }
-            }
+    private fun setupObservers() {
+        viewModel.listEvents.observe(this) { events ->
+            adapter.setEvents(events)
+        }
 
-            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-                showLoading(false)
-                Toast.makeText(this@MainActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
+        viewModel.isLoading.observe(this) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
 
-    private fun showLoading(isLoading: Boolean) {
-        progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        viewModel.error.observe(this) { errorMessage ->
+            errorMessage?.let {
+                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

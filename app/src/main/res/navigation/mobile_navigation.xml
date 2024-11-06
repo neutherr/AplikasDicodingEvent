@@ -10,7 +10,11 @@
         android:label="Upcoming Events">
         <action
             android:id="@+id/action_upcoming_to_detail"
-            app:destination="@id/navigation_detail" />
+            app:destination="@id/navigation_detail"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
     <fragment
@@ -19,7 +23,11 @@
         android:label="Finished Events">
         <action
             android:id="@+id/action_finished_to_detail"
-            app:destination="@id/navigation_detail" />
+            app:destination="@id/navigation_detail"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim" />
     </fragment>
 
     <fragment
@@ -31,4 +39,22 @@
             app:argType="integer"
             android:defaultValue="0" />
     </fragment>
+
+    <fragment
+        android:id="@+id/navigation_favorite"
+        android:name="com.example.aplikasidicodingevent.ui.favorite.FavoriteFragment"
+        android:label="@string/favorite">
+        <action
+            android:id="@+id/action_favorite_to_detail"
+            app:destination="@id/navigation_detail"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/navigation_favorite"/>
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_setting"
+        android:name="com.example.aplikasidicodingevent.ui.setting.SettingFragment"
+        android:label="Setting" />
 </navigation>

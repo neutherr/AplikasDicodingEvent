@@ -4,14 +4,20 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import com.example.aplikasidicodingevent.BuildConfig
 
 class ApiConfig {
     companion object {
-        private const val BASE_URL = "https://event-api.dicoding.dev/"
+        // Menggunakan BuildConfig untuk BASE_URL
+        private const val BASE_URL = BuildConfig.BASE_URL
 
         fun getApiService(): ApiService {
-            val loggingInterceptor = HttpLoggingInterceptor()
-            loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+            // Logging Interceptor hanya aktif di mode debug
+            val loggingInterceptor = if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+            } else {
+                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE)
+            }
 
             val client = OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
